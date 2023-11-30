@@ -2,9 +2,46 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Inregistreaza-te!</title>
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
+
+<div class="container">
+    <h1>Formular de inregistrare</h1>
+    <form action="/register" method="post">
+        <label for="firstName">Prenume:</label>
+        <input type="text" id="firstName" name="firstName" required>
+
+        <label for="lastName">Nume de familie:</label>
+        <input type="text" id="lastName" name="lastName" required>
+
+        <label for="username">Nume de utilizator:</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">Parola:</label>
+        <input type="password" id="password" name="password" required>
+
+        <label for="confirmPassword">Confirma Parola:</label>
+        <input type="password" id="confirmPassword" name="cofirmPassword" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="birthYear">Anul Nasterii:</label>
+        <input type="text" id="birthYear" name="birthYear" placeholder="YYYY" pattern="[0-9]{4}" required max="2024">
+
+        <label for="birthMonth">Luna Nasterii:</label>
+        <input type="text" id="birthMonth" name="birthMonth" placeholder="MM" pattern="[0-9]{1,2}" required max="12">
+
+        <label for="birthDay">Ziua Nasterii:</label>
+        <input type="text" id="birthDay" name="birthDay" placeholder="DD" pattern="[0-9]{1,2}" required max="31">
+        <br>
+        <button type="submit">Inregistreaza-te!</button>
+    </form>
+    <br>
+    <button onclick="location.href='/'">Home</button>
+</div>
 
 </body>
 </html>

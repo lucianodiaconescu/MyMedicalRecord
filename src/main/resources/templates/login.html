@@ -2,9 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Logare</title>
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
+
+<div class="container">
+    <h1>Logheaza-te!</h1>
+    <form action="/login" method="post">
+        <label for="username">Nume de utilizator:</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">Parola:</label>
+        <input type="password" id="password" name="password" required>
+        <br>
+        <button type="submit">Logare</button>
+    </form>
+    <br>
+    <button onclick="location.href='/'">Home</button>
+</div>
 
 </body>
 </html>
