@@ -1,9 +1,11 @@
 package com.example.mymedrec.controllers;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Controller
+@SessionAttributes("username")
 public class LoginController {
 
     private static final String DB_URL = "jdbc:oracle:thin:@localhost:1521:xe";
@@ -34,24 +37,23 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String processLogin(@RequestParam String username, @RequestParam String password) {
+    public String processLogin(@RequestParam String username, @RequestParam String password, ModelMap model) {
         try {
             PreparedStatement ps = con.prepareStatement("SELECT * FROM MEDRECUSERS WHERE NUMEUTILIZATOR=? AND PAROLA=?");
             ps.setString(1, username);
             ps.setString(2, password);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                System.out.println("Utilizator autentificat: " + username);
-                // Aici poți adăuga logica adițională după autentificare, de exemplu, să salvezi username într-o variabilă de sesiune
-                return "redirect:/home";
+                model.addAttribute("username", username);
+                return "redirect:/logged";
             } else {
-                System.out.println("Nume de utilizator sau parolă incorecte.");
-                return "redirect:/login";
+                model.addAttribute("message", "Numele de utilizator sau parola sunt incorecte!");
+                return "login";
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("Eroare la autentificare.");
-            return "redirect:/login";
+            model.addAttribute("message", "Eroare la autentificare.");
+            return "login";
         }
     }
 }

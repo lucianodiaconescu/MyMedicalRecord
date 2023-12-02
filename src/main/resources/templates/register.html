@@ -41,7 +41,10 @@
     </form>
     <br>
     <button onclick="location.href='/'">Home</button>
+    <p>Ai cont deja? Logheaza-te!</p>
+    <button onclick="location.href='/login'">Login</button>
 </div>
-
+<div th:if="${message}" class="message">
+    <p th:text="${message}"></p></div>
 </body>
 </html>

@@ -1,6 +1,7 @@
 package com.example.mymedrec.controllers;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,15 +33,15 @@ public class RegisterController {
         return "register";
     }
     @PostMapping("/register")
-    public String processRegister(@RequestParam String firstName, @RequestParam String lastName, @RequestParam String username, @RequestParam String password, @RequestParam String email, @RequestParam String birthYear, @RequestParam String birthMonth, @RequestParam String birthDay) throws SQLException {
+    public String processRegister(@RequestParam String firstName, @RequestParam String lastName, @RequestParam String username, @RequestParam String password, @RequestParam String email, @RequestParam String birthYear, @RequestParam String birthMonth, @RequestParam String birthDay, ModelMap model) throws SQLException {
 
         PreparedStatement ps = con.prepareStatement("SELECT * FROM MEDRECUSERS WHERE NUMEUTILIZATOR=? or EMAIL=?");
         ps.setString(1, username);
         ps.setString(2, email);
         ResultSet rs = ps.executeQuery();
         if (rs.next()) {
-            System.out.print("user sau email folosite");
-            return "redirect:/register";
+            model.addAttribute("message", "Numele de utilizator sau email-ul sunt folosite deja.");
+            return "register";
         } else {
             PreparedStatement ps1 = con.prepareStatement("INSERT INTO MEDRECUSERS VALUES (?,?,?,?,?,?,?,?,?)");
             ps1.setString(1, firstName);
@@ -53,9 +54,9 @@ public class RegisterController {
             ps1.setString(8, birthDay);
             ps1.setString(9, "pacient");
             if (ps1.executeUpdate() != 0)
-                System.out.print("inregistrat");
+                model.addAttribute("message", "Te-ai inregistrat cu succes!");
             ps.close();
-            return "redirect:/register";
+            return "register";
         }
     }
 }

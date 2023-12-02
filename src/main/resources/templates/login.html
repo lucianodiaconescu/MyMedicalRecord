@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Logare</title>
@@ -19,8 +21,13 @@
         <button type="submit">Logare</button>
     </form>
     <br>
-    <button onclick="location.href='/'">Home</button>
-</div>
 
+    <button onclick="location.href='/'">Home</button>
+    <p>Nu ai cont? Inregistreaza-te!</p>
+    <button onclick="location.href='/register'">Register</button>
+</div>
+<div th:if="${message}" class="message">
+    <p th:text="${message}"></p>
+</div>
 </body>
 </html>
