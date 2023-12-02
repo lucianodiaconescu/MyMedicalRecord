@@ -10,7 +10,16 @@ public class User {
     private int lunaNastere;
     private int ziNastere;
 
-    public User() {
+
+    public User(String prenume, String nume, String numeUtilizator, String parola, String email, int anNastere, int lunaNastere, int ziNastere) {
+        this.prenume = prenume;
+        this.nume = nume;
+        this.numeUtilizator = numeUtilizator;
+        this.parola = parola;
+        this.email = email;
+        this.anNastere = anNastere;
+        this.lunaNastere = lunaNastere;
+        this.ziNastere = ziNastere;
     }
 
     public String getPrenume() {

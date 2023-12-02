@@ -34,7 +34,6 @@ public class RegisterController {
     }
     @PostMapping("/register")
     public String processRegister(@RequestParam String firstName, @RequestParam String lastName, @RequestParam String username, @RequestParam String password, @RequestParam String email, @RequestParam String birthYear, @RequestParam String birthMonth, @RequestParam String birthDay, ModelMap model) throws SQLException {
-
         PreparedStatement ps = con.prepareStatement("SELECT * FROM MEDRECUSERS WHERE NUMEUTILIZATOR=? or EMAIL=?");
         ps.setString(1, username);
         ps.setString(2, email);

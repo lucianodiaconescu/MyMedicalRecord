@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Medic Page</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<h1>Bine ai venit, <span th:text="${username}"></span>!</h1>
+
+<h2>Pacienții tăi:</h2>
+<table border="1">
+    <thead>
+    <tr>
+        <th>Prenume</th>
+        <th>Nume</th>
+        <th>Utilizator</th>
+        <th>Email</th>
+        <th>An Nastere</th>
+        <th>Luna Nastere</th>
+        <th>Zi Nastere</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="pacient : ${pacienti}">
+        <td th:text="${pacient.prenume}"></td>
+        <td th:text="${pacient.nume}"></td>
+        <td th:text="${pacient.numeUtilizator}"></td>
+        <td th:text="${pacient.email}"></td>
+        <td th:text="${pacient.anNastere}"></td>
+        <td th:text="${pacient.lunaNastere}"></td>
+        <td th:text="${pacient.ziNastere}"></td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
