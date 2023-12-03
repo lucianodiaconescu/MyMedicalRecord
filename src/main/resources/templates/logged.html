@@ -4,52 +4,46 @@
     <meta charset="UTF-8">
     <title>Logged</title>
     <link rel="stylesheet" href="/style.css">
-    <style>
-        #dialog {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            z-index: 1000;
-        }
-    </style>
 </head>
 <body>
 
-<h2>Bine ai venit, <span th:text="${username}">[Missing Username]</span>!</h2>
+<div class="container">
+    <h1>Bine ai venit, <span th:text="${username}">[Missing Username]</span>!</h1>
 
-<p>Prenume: <span th:text="${prenume}">[Missing Prenume]</span></p>
-<p>Nume: <span th:text="${nume}">[Missing Nume]</span></p>
-<p>Email: <span th:text="${email}">[Missing Email]</span></p>
-<p>Data de naștere: <span th:text="${zinastere + '/' + lunanastere + '/' + annastere}">[Missing Data de naștere]</span></p>
-<div th:if="${inscris}">
-    <p>Ai un medic de familie: <span th:text="${numeMedic}"></span>.</p>
-</div>
-<div th:unless="${inscris}">
-    <p>Nu ai un medic de familie.</p>
-    <button onclick="showDialog()">Vezi medici disponibili</button>
-</div>
+    <p>Prenume: <span th:text="${prenume}">[Missing Prenume]</span></p>
+    <p>Nume: <span th:text="${nume}">[Missing Nume]</span></p>
+    <p>Email: <span th:text="${email}">[Missing Email]</span></p>
+    <p>Data de naștere: <span th:text="${zinastere + '/' + lunanastere + '/' + annastere}">[Missing Data de naștere]</span></p>
 
-<div id="dialog">
-    <h3>Medici disponibili:</h3>
-    <ul>
-        <li th:each="medic : ${listaMedici}">
-            <p>
-                Nume: <span th:text="${medic.nume}"></span>,
-                Prenume: <span th:text="${medic.prenume}"></span>,
-                Medic de familie: <span th:text="${medic.numeUtilizator}"></span>
+    <div th:if="${inscris}">
+        <p>Ai un medic de familie: <span th:text="${numeMedic}"></span>.</p>
+        <!-- Adaugă butonul pentru excludere -->
+        <button th:if="${showExcludeButton}" onclick="excludeMedic()">Paraseste medicul de familie!</button>
+    </div>
+
+    <div th:unless="${inscris}">
+        <p>Nu ai un medic de familie.</p>
+        <button onclick="showDialog()">Vezi medicii disponibili</button>
+    </div>
+
+    <div id="dialog" th:if="${!inscris}">
+        <h3>Medici disponibili:</h3>
+        <form action="/alege-medic" method="post" class="form">
+            <select name="medic" th:field="${medicSelectForm.medic}" class="input">
+                <option th:each="medic : ${listaMedici}" th:value="${medic.numeUtilizator}" th:text="${medic.nume}"></option>
+            </select>
+            <!-- Aici adăugați cod pentru afișarea detaliilor medicului -->
+            <p th:each="medic : ${listaMedici}" th:if="${medic.numeUtilizator == medicSelectForm.medic}">
+                Detalii medic: <span th:text="${medic.nume}, ${medic.prenume}, ${medic.email}"></span>
             </p>
-        </li>
-    </ul>
-    <button onclick="closeDialog()">Închide</button>
+            <button type="submit" class="button">Alege</button>
+        </form>
+        <button onclick="closeDialog()" class="button">Închide</button>
+    </div>
+
+    <br>
+    <button onclick="location.href='/login'" class="button">Logout</button>
 </div>
-<br>
-<button onclick="location.href='/login'">Logout</button>
 
 <script>
     function showDialog() {
@@ -60,6 +54,11 @@
     function closeDialog() {
         var dialog = document.getElementById('dialog');
         dialog.style.display = 'none';
+    }
+
+    function excludeMedic() {
+        // Adăugați cod pentru a efectua cererea către controller pentru a exclude medicul
+        window.location.href = '/exclude-medic';
     }
 </script>
 
