@@ -45,9 +45,9 @@ public class MedicController {
 
             while (rs.next()) {
                 pacienti.add(new User(
-                        rs.getString("NUMEUTILIZATOR"),
                         rs.getString("PRENUME"),
                         rs.getString("NUME"),
+                        rs.getString("NUMEUTILIZATOR"),
                         rs.getString("PAROLA"),
                         rs.getString("EMAIL"),
                         rs.getInt("ANNASTERE"),

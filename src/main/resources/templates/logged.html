@@ -30,14 +30,15 @@
         <h3>Medici disponibili:</h3>
         <form action="/alege-medic" method="post" class="form">
             <select name="medic" th:field="${medicSelectForm.medic}" class="input">
-                <option th:each="medic : ${listaMedici}" th:value="${medic.numeUtilizator}" th:text="${medic.nume}"></option>
+                <option th:each="medic : ${listaMedici}" th:value="${medic.numeUtilizator}" th:text="${medic.prenume + ' ' + medic.nume + ' - ' + medic.ziNastere + '/' + medic.lunaNastere + '/' + medic.anNastere}"></option>
             </select>
-            <!-- Aici adăugați cod pentru afișarea detaliilor medicului -->
             <p th:each="medic : ${listaMedici}" th:if="${medic.numeUtilizator == medicSelectForm.medic}">
                 Detalii medic: <span th:text="${medic.nume}, ${medic.prenume}, ${medic.email}"></span>
             </p>
+            <br>
             <button type="submit" class="button">Alege</button>
         </form>
+        <br>
         <button onclick="closeDialog()" class="button">Închide</button>
     </div>
 
@@ -46,6 +47,9 @@
 </div>
 
 <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        closeDialog();
+    });
     function showDialog() {
         var dialog = document.getElementById('dialog');
         dialog.style.display = 'block';
@@ -57,10 +61,8 @@
     }
 
     function excludeMedic() {
-        // Adăugați cod pentru a efectua cererea către controller pentru a exclude medicul
         window.location.href = '/exclude-medic';
     }
 </script>
-
 </body>
 </html>

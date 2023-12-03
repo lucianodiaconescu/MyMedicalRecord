@@ -42,20 +42,18 @@ public class LoggedController {
 
         try {
             model.addAttribute("medicSelectForm", new MedicSelectForm());
-
             String queryPacient = "SELECT NUMEMEDIC FROM MEDRECPACIENTI WHERE NUMEPACIENT = ?";
             PreparedStatement psPacient = con.prepareStatement(queryPacient);
             psPacient.setString(1, user.getNumeUtilizator());
             ResultSet rsPacient = psPacient.executeQuery();
-
             if (rsPacient.next()) {
                 String numeMedic = rsPacient.getString("NUMEMEDIC");
                 model.addAttribute("inscris", true);
                 model.addAttribute("numeMedic", numeMedic);
-                model.addAttribute("showExcludeButton", true);  // Arată butonul de excludere
+                model.addAttribute("showExcludeButton", true);
             } else {
                 model.addAttribute("inscris", false);
-                model.addAttribute("showExcludeButton", false);  // Ascunde butonul de excludere
+                model.addAttribute("showExcludeButton", false);
 
                 String queryMedici = "SELECT * FROM MEDRECUSERS WHERE STATUT = 'medic'";
                 PreparedStatement psMedici = con.prepareStatement(queryMedici);
