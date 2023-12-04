@@ -39,7 +39,6 @@
     </tbody>
 </table>
 
-<!-- Div pentru afișarea istoricului -->
 <div id="istoricDiv" style="display: none;">
     <h2>Istoric Pacient</h2>
     <table border="1">
@@ -53,7 +52,6 @@
         </tr>
         </thead>
         <tbody id="istoricTableBody">
-        <!-- Aici vom popula datele folosind Thymeleaf -->
         <tr th:each="recepta : ${istoric}">
             <td th:text="${numeUtilizator}"></td>
             <td th:text="${recepta.afectiune}"></td>

@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home Page</title>
     <link rel="stylesheet" href="/style.css">
-    <!-- Adaugă dependențele pentru LeafletJS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
@@ -17,24 +16,17 @@
         <button onclick="location.href='/register'">Inregistreaza-te!</button>
         <button onclick="location.href='/login'">Logheaza-te!</button>
     </div>
-    <!-- Adaugă un container pentru harta -->
     <div id="map" style="height: 400px; margin-top: 20px;"></div>
 </div>
 
 <script>
-    // Inițializează harta LeafletJS
-    var map = L.map('map').setView([45.9432, 24.9668], 6); // Coordonatele centrului României și nivelul de zoom
-
-    // Adaugă stratul de hărți OpenStreetMap
+    var map = L.map('map').setView([45.9432, 24.9668], 6);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
     }).addTo(map);
-
-    // Adaugă un marker pentru centrul României
     L.marker([45.9432, 24.9668]).addTo(map)
         .bindPopup('Centrul României');
 
 </script>
-
 </body>
 </html>

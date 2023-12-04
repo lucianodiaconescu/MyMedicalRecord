@@ -41,7 +41,6 @@ public class LoggedController {
         model.addAttribute("zinastere", user.getZiNastere());
 
         try {
-            // Adaugă query-ul pentru a obține rețetele pacientului curent
             String queryRetete = "SELECT * FROM MEDRECRETETE WHERE NUMEPACIENT = ?";
             PreparedStatement psRetete = con.prepareStatement(queryRetete);
             psRetete.setString(1, user.getNumeUtilizator());
@@ -74,7 +73,6 @@ public class LoggedController {
                 model.addAttribute("inscris", false);
                 model.addAttribute("showExcludeButton", false);
 
-                // Dacă utilizatorul nu are un medic, vom tot adăuga lista de medici și rețetele în model
                 String queryMedici = "SELECT * FROM MEDRECUSERS WHERE STATUT = 'medic'";
                 PreparedStatement psMedici = con.prepareStatement(queryMedici);
                 ResultSet rsMedici = psMedici.executeQuery();
@@ -104,7 +102,6 @@ public class LoggedController {
 
         return "logged";
     }
-
     @PostMapping("/alege-medic")
     public String alegeMedic(
             @SessionAttribute("user") User user,

@@ -64,7 +64,31 @@
             </tbody>
         </table>
     </div>
-
+    <br>
+    <button onclick="showSymptomsDialog()" class="button">Vezi simptome și tratamente</button>
+    <div id="symptomsDialog" style="display: none;">
+        <h3>Simptome și tratamente:</h3>
+        <select id="symptomsSelect" class="input">
+            <option value="Tuse">Tuse</option>
+            <option value="Stranut">Stranut</option>
+            <option value="Nas infundat">Nas infundat</option>
+            <option value="Dureri in gat">Dureri in gat</option>
+            <option value="Dureri de cap">Dureri de cap</option>
+            <option value="Dureri de stomac">Dureri de stomac</option>
+            <option value="Dureri osoase">Dureri osoase</option>
+            <option value="Balonare">Balonare</option>
+            <option value="Constipatie">Constipatie</option>
+            <option value="Varsaturi">Varsaturi</option>
+            <option value="Febra">Febra</option>
+            <option value="Frisoane">Frisoane</option>
+            <option value="Stari de lesin">Stari de lesin</option>
+        </select>
+        <br><br>
+        <button onclick="getTreatment()" class="button">Genereaza un tratament</button>
+        <br><br>
+        <button onclick="closeSymptomsDialog()" class="button">Inchide</button>
+        <p id="treatmentResult"></p>
+    </div>
     <button onclick="location.href='/login'" class="button">Logout</button>
 </div>
 
@@ -88,6 +112,55 @@
         window.location.href = '/exclude-medic';
     }
 
+    function showSymptomsDialog() {
+        var dialog = document.getElementById('symptomsDialog');
+        dialog.style.display = 'block';
+    }
+
+    function closeSymptomsDialog() {
+        var dialog = document.getElementById('symptomsDialog');
+        dialog.style.display = 'none';
+    }
+
+    function getTreatment() {
+        var symptomsSelect = document.getElementById('symptomsSelect');
+        var selectedSymptom = symptomsSelect.value;
+        var treatment = getTreatmentForSymptom(selectedSymptom);
+        var treatmentResult = document.getElementById('treatmentResult');
+        treatmentResult.innerHTML = 'Tratament generat pentru ' + selectedSymptom + ': ' + treatment;
+    }
+    function getTreatmentForSymptom(symptom) {
+        switch (symptom) {
+            case 'Tuse':
+                return 'Paxeladine sirop / Sinecod sirop / Ambroxol';
+            case 'Stranut':
+                return 'ACC / Bronchicum / Sinecod sirop';
+            case 'Nas infundat':
+                return 'Tantum Verde / Olynth 0.1% spray nazal / Trachisan';
+            case 'Dureri in gat':
+                return 'Hexoraletten / Strepsils / Faringo Intensiv';
+            case 'Dureri de cap':
+                return 'Saridon / Nurofen / Synocam';
+            case 'Dureri de stomac':
+                return 'Stomach Forte / Stomacalm';
+            case 'Dureri osoase':
+                return 'Nurofen / Diclofenac';
+            case 'Balonare':
+                return 'Kebene Forte / Himalaya Gasex';
+            case 'Constipatie':
+                return 'Cicolax / Herbolax';
+            case 'Varsaturi':
+                return 'Emetix / Cocculine';
+            case 'Febra':
+                return 'Fervex / Nurofen';
+            case 'Frisoane':
+                return 'A ferin plus / Alka Seltzer';
+            case 'Stari de lesin':
+                return 'Anxin / Deflamil';
+            default:
+                return 'Tratament nedeterminat';
+        }
+    }
 
 </script>
 </body>

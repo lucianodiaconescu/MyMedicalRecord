@@ -1,17 +1,17 @@
 package com.example.mymedrec.models;
 
 public class SimptomeSelectForm {
-    private String simptome;
+    private String simptom;
 
     public SimptomeSelectForm() {
 
     }
 
-    public String getSimptome() {
-        return simptome;
+    public String getSimptom() {
+        return simptom;
     }
 
-    public void setSimptome(String simptome) {
-        this.simptome = simptome;
+    public void setSimptome(String simptom) {
+        this.simptom = simptom;
     }
 }
