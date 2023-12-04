@@ -17,7 +17,6 @@
 
     <div th:if="${inscris}">
         <p>Ai un medic de familie: <span th:text="${numeMedic}"></span>.</p>
-        <!-- Adaugă butonul pentru excludere -->
         <button th:if="${showExcludeButton}" onclick="excludeMedic()">Paraseste medicul de familie!</button>
     </div>
 
@@ -42,14 +41,39 @@
         <button onclick="closeDialog()" class="button">Închide</button>
     </div>
 
-    <br>
+    <div th:if="${listaRetete}">
+        <h2>Istoricul tau medical</h2>
+        <table border="1">
+            <thead>
+            <tr>
+                <th>Nume Pacient</th>
+                <th>Afectiune</th>
+                <th>Tratament</th>
+                <th>Status</th>
+                <th>Medic Constatator</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="reteta : ${listaRetete}">
+                <td th:text="${reteta.numePacient}"></td>
+                <td th:text="${reteta.afectiune}"></td>
+                <td th:text="${reteta.tratament}"></td>
+                <td th:text="${reteta.status}"></td>
+                <td th:text="${reteta.medicConstatator}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
     <button onclick="location.href='/login'" class="button">Logout</button>
 </div>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         closeDialog();
+        closeSimptomeDialog();
     });
+
     function showDialog() {
         var dialog = document.getElementById('dialog');
         dialog.style.display = 'block';
@@ -63,6 +87,8 @@
     function excludeMedic() {
         window.location.href = '/exclude-medic';
     }
+
+
 </script>
 </body>
 </html>

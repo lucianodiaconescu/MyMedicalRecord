@@ -1,13 +1,12 @@
 package com.example.mymedrec.controllers;
 
+import com.example.mymedrec.models.MedicSelectForm;
+import com.example.mymedrec.models.Reteta;
+import com.example.mymedrec.models.SimptomeSelectForm;
 import com.example.mymedrec.models.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.SessionAttribute;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -31,6 +30,7 @@ public class LoggedController {
             @SessionAttribute("user") User user,
             Model model
     ) {
+
         model.addAttribute("username", user.getNumeUtilizator());
         model.addAttribute("prenume", user.getPrenume());
         model.addAttribute("nume", user.getNume());
@@ -41,6 +41,25 @@ public class LoggedController {
         model.addAttribute("zinastere", user.getZiNastere());
 
         try {
+            // Adaugă query-ul pentru a obține rețetele pacientului curent
+            String queryRetete = "SELECT * FROM MEDRECRETETE WHERE NUMEPACIENT = ?";
+            PreparedStatement psRetete = con.prepareStatement(queryRetete);
+            psRetete.setString(1, user.getNumeUtilizator());
+            ResultSet rsRetete = psRetete.executeQuery();
+
+            List<Reteta> listaRetete = new ArrayList<>();
+            while (rsRetete.next()) {
+                Reteta reteta = new Reteta(
+                        rsRetete.getString("NUMEPACIENT"),
+                        rsRetete.getString("AFECTIUNE"),
+                        rsRetete.getString("TRATAMENT"),
+                        rsRetete.getString("STATUS"),
+                        rsRetete.getString("MEDICCONSTATATOR")
+                );
+                listaRetete.add(reteta);
+            }
+
+            model.addAttribute("listaRetete", listaRetete);
             model.addAttribute("medicSelectForm", new MedicSelectForm());
             String queryPacient = "SELECT NUMEMEDIC FROM MEDRECPACIENTI WHERE NUMEPACIENT = ?";
             PreparedStatement psPacient = con.prepareStatement(queryPacient);
@@ -55,6 +74,7 @@ public class LoggedController {
                 model.addAttribute("inscris", false);
                 model.addAttribute("showExcludeButton", false);
 
+                // Dacă utilizatorul nu are un medic, vom tot adăuga lista de medici și rețetele în model
                 String queryMedici = "SELECT * FROM MEDRECUSERS WHERE STATUT = 'medic'";
                 PreparedStatement psMedici = con.prepareStatement(queryMedici);
                 ResultSet rsMedici = psMedici.executeQuery();
@@ -75,6 +95,7 @@ public class LoggedController {
                 }
 
                 model.addAttribute("listaMedici", listaMedici);
+
             }
 
         } catch (SQLException e) {
@@ -123,21 +144,8 @@ public class LoggedController {
 
         return "redirect:/login";
     }
-
     @GetMapping("/logout")
     public String logout(Model model) {
         return "redirect:/login";
-    }
-
-    public static class MedicSelectForm {
-        private String medic;
-
-        public String getMedic() {
-            return medic;
-        }
-
-        public void setMedic(String medic) {
-            this.medic = medic;
-        }
     }
 }

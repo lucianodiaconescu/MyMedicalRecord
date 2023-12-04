@@ -20,6 +20,7 @@
         <th>An Nastere</th>
         <th>Luna Nastere</th>
         <th>Zi Nastere</th>
+        <th>Acțiuni</th>
     </tr>
     </thead>
     <tbody>
@@ -31,10 +32,78 @@
         <td th:text="${pacient.anNastere}"></td>
         <td th:text="${pacient.lunaNastere}"></td>
         <td th:text="${pacient.ziNastere}"></td>
+        <td>
+            <button th:attr="data-username=${pacient.numeUtilizator}" onclick="showHistory(this)">Afiseaza istoric</button>
+        </td>
     </tr>
     </tbody>
 </table>
+
+<!-- Div pentru afișarea istoricului -->
+<div id="istoricDiv" style="display: none;">
+    <h2>Istoric Pacient</h2>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>Nume Pacient</th>
+            <th>Afectiune</th>
+            <th>Tratament</th>
+            <th>Medic constatator</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        <tbody id="istoricTableBody">
+        <!-- Aici vom popula datele folosind Thymeleaf -->
+        <tr th:each="recepta : ${istoric}">
+            <td th:text="${numeUtilizator}"></td>
+            <td th:text="${recepta.afectiune}"></td>
+            <td th:text="${recepta.tratament}"></td>
+            <td th:text="${recepta.medicConstatator}"></td>
+            <td th:text="${recepta.status}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <button onclick="inchideIstoric()">Inchide</button>
+</div>
 <br>
 <button onclick="location.href='/login'" class="button">Logout</button>
+
+<script>
+    function showHistory(button) {
+        const numeUtilizator = button.getAttribute('data-username');
+
+        fetch('/istoric/' + numeUtilizator)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const istoricTableBody = document.getElementById('istoricTableBody');
+                istoricTableBody.innerHTML = '';
+
+                data.forEach(recepta => {
+                    const row = document.createElement('tr');
+                    const columns = ['numePacient', 'afectiune', 'tratament', 'medicConstatator', 'status'];
+                    columns.forEach(column => {
+                        const cell = document.createElement('td');
+                        cell.textContent = recepta[column];
+                        row.appendChild(cell);
+                    });
+                    istoricTableBody.appendChild(row);
+                });
+
+                document.getElementById('istoricDiv').style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error fetching history:', error);
+            });
+    }
+
+    function inchideIstoric() {
+        document.getElementById('istoricDiv').style.display = 'none';
+    }
+</script>
 </body>
 </html>
