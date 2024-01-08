@@ -34,6 +34,7 @@
         <td th:text="${pacient.ziNastere}"></td>
         <td>
             <button th:attr="data-username=${pacient.numeUtilizator}" onclick="showHistory(this)">Afiseaza istoric</button>
+            <button th:attr="data-username=${pacient.numeUtilizator}" onclick="showAddRecipeForm(this)">Adaugă rețetă</button>
         </td>
     </tr>
     </tbody>
@@ -44,25 +45,50 @@
     <table border="1">
         <thead>
         <tr>
-            <th>Nume Pacient</th>
             <th>Afectiune</th>
             <th>Tratament</th>
             <th>Medic constatator</th>
             <th>Status</th>
+            <th>Modifica Status</th>
         </tr>
         </thead>
         <tbody id="istoricTableBody">
         <tr th:each="recepta : ${istoric}">
-            <td th:text="${numeUtilizator}"></td>
             <td th:text="${recepta.afectiune}"></td>
             <td th:text="${recepta.tratament}"></td>
             <td th:text="${recepta.medicConstatator}"></td>
             <td th:text="${recepta.status}"></td>
+            <td>
+                <form method="post" th:action="@{/modifyStatus/{numePacient}/{afectiune}(numePacient=${pacient.numeUtilizator}, afectiune=${recepta.afectiune})}">
+                    <select name="newStatus">
+                        <option value="neterminat">Neterminat</option>
+                        <option value="terminat">Terminat</option>
+                    </select>
+                    <button type="submit">Modifică Status</button>
+                </form>
+            </td>
         </tr>
         </tbody>
     </table>
     <button onclick="inchideIstoric()">Inchide</button>
 </div>
+
+<!-- Adăugat formular pentru adăugarea rețetei -->
+<div id="addRecipeForm" style="display: none;">
+    <h2>Adaugă rețetă pentru pacient:</h2>
+    <form method="post" th:action="@{/adaugaReteta}">
+        <input type="hidden" name="numePacient" id="numePacient" th:value="${numePacient}" />
+        <label for="afectiune">Afectiune:</label>
+        <input type="text" id="afectiune" name="afectiune" required>
+        <br>
+        <label for="tratament">Tratament:</label>
+        <input type="text" id="tratament" name="tratament" required>
+        <br>
+        <button type="submit">Adaugă Rețetă</button>
+    </form>
+    <button onclick="inchideFormularReteta()">Închide</button>
+</div>
+
 <br>
 <button onclick="location.href='/login'" class="button">Logout</button>
 
@@ -83,12 +109,36 @@
 
                 data.forEach(recepta => {
                     const row = document.createElement('tr');
-                    const columns = ['numePacient', 'afectiune', 'tratament', 'medicConstatator', 'status'];
+                    const columns = ['afectiune', 'tratament', 'medicConstatator', 'status'];
                     columns.forEach(column => {
                         const cell = document.createElement('td');
                         cell.textContent = recepta[column];
                         row.appendChild(cell);
                     });
+
+                    const statusCell = document.createElement('td');
+                    const form = document.createElement('form');
+                    form.method = 'post';
+                    form.action = '/modifyStatus/' + numeUtilizator + '/' + recepta.afectiune;
+
+                    const select = document.createElement('select');
+                    select.name = 'newStatus';
+                    const options = ['Neterminat', 'Terminat'];
+                    options.forEach(optionValue => {
+                        const option = document.createElement('option');
+                        option.value = optionValue;
+                        option.textContent = optionValue.charAt(0).toUpperCase() + optionValue.slice(1);
+                        select.appendChild(option);
+                    });
+
+                    const submitButton = document.createElement('button');
+                    submitButton.type = 'submit';
+                    submitButton.textContent = 'Modifică Status';
+                    form.appendChild(select);
+                    form.appendChild(submitButton);
+                    statusCell.appendChild(form);
+
+                    row.appendChild(statusCell);
                     istoricTableBody.appendChild(row);
                 });
 
@@ -97,6 +147,16 @@
             .catch(error => {
                 console.error('Error fetching history:', error);
             });
+    }
+
+    function showAddRecipeForm(button) {
+        const numeUtilizator = button.getAttribute('data-username');
+        document.getElementById('addRecipeForm').style.display = 'block';
+        document.getElementById('numePacient').value = numeUtilizator;
+    }
+
+    function inchideFormularReteta() {
+        document.getElementById('addRecipeForm').style.display = 'none';
     }
 
     function inchideIstoric() {

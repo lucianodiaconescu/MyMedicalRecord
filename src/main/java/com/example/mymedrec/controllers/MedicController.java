@@ -4,10 +4,7 @@ import com.example.mymedrec.models.Reteta;
 import com.example.mymedrec.models.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -69,8 +66,12 @@ public class MedicController {
         }
 
         model.addAttribute("pacienti", pacienti);
+        model.addAttribute("numePacient", ""); // Adăugat pentru a inițializa numele pacientului în formular
+        model.addAttribute("afectiune", "");
+        model.addAttribute("tratament", "");
         return "medic";
     }
+
     @GetMapping("/istoric/{numeUtilizator}")
     @ResponseBody
     public List<Reteta> getIstoricPacient(@PathVariable String numeUtilizator) {
@@ -96,5 +97,52 @@ public class MedicController {
             e.printStackTrace();
         }
         return istoric;
+    }
+
+    @PostMapping("/modifyStatus/{numePacient}/{afectiune}")
+    public String modifyStatusTratament(
+            @PathVariable String numePacient,
+            @PathVariable String afectiune,
+            @RequestParam String newStatus
+    ) {
+        try {
+            String query = "UPDATE MEDRECRETETE SET STATUS = ? WHERE NUMEPACIENT = ? AND AFECTIUNE = ?";
+            try (Connection con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+                 PreparedStatement ps = con.prepareStatement(query)) {
+                ps.setString(1, newStatus);
+                ps.setString(2, numePacient);
+                ps.setString(3, afectiune);
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return "redirect:/medic";
+    }
+
+    @PostMapping("/adaugaReteta")
+    public String adaugaReteta(
+            @RequestParam String numePacient,
+            @RequestParam String afectiune,
+            @RequestParam String tratament,
+            @SessionAttribute("user") User medic
+    ) {
+        try {
+            String query = "INSERT INTO MEDRECRETETE (NUMEPACIENT, AFECTIUNE, TRATAMENT, STATUS, MEDICCONSTATATOR) VALUES (?, ?, ?, ?, ?)";
+            try (Connection con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+                 PreparedStatement ps = con.prepareStatement(query)) {
+                ps.setString(1, numePacient);
+                ps.setString(2, afectiune);
+                ps.setString(3, tratament);
+                ps.setString(4, "Neterminat");
+                ps.setString(5, medic.getNumeUtilizator());
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return "redirect:/medic";
     }
 }
