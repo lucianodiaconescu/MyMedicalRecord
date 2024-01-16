@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Logged</title>
     <link rel="stylesheet" href="/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
 </head>
 <body>
 
@@ -91,6 +93,36 @@
     </div>
     <button onclick="location.href='/login'" class="button">Logout</button>
 </div>
+<section id="chat">
+    <h2>Pune o intrebare despre simptomele tale!</h2>
+    <input type="text" id="question" placeholder="Introdu o întrebare...">
+    <button class ="askgpt" onclick="askQuestion()">Trimite întrebarea</button>
+    <div id="answer"></div>
+</section>
+<br><br>
+<script>
+    function askQuestion() {
+        var prompt = $("#question").val();
+        var requestBody = {
+            model: "text-davinci-002",
+            messages: [{ role: 'system', content: prompt }],
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/chat",
+            contentType: "application/json",
+            data: JSON.stringify(requestBody),
+            success: function (response) {
+                var content = JSON.parse(response).choices[0].message.content;
+                $("#answer").text(content);
+            },
+            error: function (error) {
+                console.log("Error:", error);
+            }
+        });
+    }
+</script>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {

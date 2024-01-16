@@ -4,13 +4,23 @@ import com.example.mymedrec.models.MedicSelectForm;
 import com.example.mymedrec.models.Reteta;
 import com.example.mymedrec.models.SimptomeSelectForm;
 import com.example.mymedrec.models.User;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.Map;
 
 @Controller
 public class LoggedController {
@@ -18,6 +28,7 @@ public class LoggedController {
     private static final String DB_URL = "jdbc:oracle:thin:@localhost:1521:xe";
     private static final String DB_USER = "SYSTEM";
     private static final String DB_PASSWORD = "db";
+    private static final String OPENAI_API_KEY = "";
 
     private final Connection con;
 
@@ -144,5 +155,42 @@ public class LoggedController {
     @GetMapping("/logout")
     public String logout(Model model) {
         return "redirect:/login";
+    }
+    @PostMapping("/chat")
+    @ResponseBody
+    public String chat(@RequestBody String prompt) {
+        try {
+            String openaiEndpoint = "https://api.openai.com/v1/chat/completions";
+            HttpClient client = HttpClient.newHttpClient();
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, Object> requestBodyMap = Map.of(
+                    "model", "gpt-3.5-turbo",
+                    "messages", List.of(
+                            Map.of("role", "system", "content", prompt)
+                    )
+            );
+            String requestBody = objectMapper.writeValueAsString(requestBodyMap);
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(openaiEndpoint))
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", "Bearer " + OPENAI_API_KEY)
+                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                return response.body();
+            } else {
+                System.out.println("Error: " + response.statusCode());
+                System.out.println("Response Body: " + response.body());
+                return "Error: " + response.statusCode();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error: " + e.getMessage();
+        }
     }
 }
